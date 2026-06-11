@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 
 const { getAllNotes, getNoteById, createNote, updateNote, deleteNote } = require('../queries/notes');
+const authenticateToken = require('../middleware/auth');
 
 // GET all notes
-router.get('/', async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
   try {
     const notes = await getAllNotes()
     res.json(notes)
@@ -14,7 +15,7 @@ router.get('/', async (req, res) => {
 });
 
 // GET single note
-router.get('/:id', async (req, res) => {
+router.get('/:id', authenticateToken, async (req, res) => {
   try {
     const note = await getNoteById(req.params.id)
     if (!note) return res.status(404).json({ error: 'note not found' })
@@ -25,7 +26,7 @@ router.get('/:id', async (req, res) => {
 });
 
 
-router.post('/', async (req, res) => {
+router.post('/', authenticateToken, async (req, res) => {
   if (!req.body.title || req.body.title.trim() === "") {
     return res.status(400).json({ error: "title is required" })
   }
@@ -39,7 +40,7 @@ router.post('/', async (req, res) => {
   }
 })
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticateToken, async (req, res) => {
   if (!req.body.title || req.body.title.trim() === "") {
     return res.status(400).json({ error: "title is required" })
   }
@@ -53,7 +54,7 @@ router.put('/:id', async (req, res) => {
   }
 })
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authenticateToken, async (req, res) => {
   try {
     const note = await deleteNote(req.params.id)
     if (!note) return res.status(404).json({ error: 'note not found' })
