@@ -1,7 +1,7 @@
 const pool = require('../db') 
 
-const getAllNotes = async () => {
-    const result = await pool.query('SELECT * FROM notes')
+const getAllNotes = async (user_id) => {
+    const result = await pool.query('SELECT * FROM notes WHERE user_id = $1', [user_id])
     return result.rows
 }
 
@@ -10,8 +10,8 @@ const getNoteById = async (id) => {
     return result.rows[0]
 }
 
-const createNote = async (title, content) => {
-    const result = await pool.query(`INSERT INTO notes (title, content) VALUES ($1, $2) RETURNING *`, [title, content])
+const createNote = async (title, content, user_id) => {
+    const result = await pool.query(`INSERT INTO notes (title, content, user_id) VALUES ($1, $2, $3) RETURNING *`, [title, content, user_id])
     return result.rows[0]
 }
 

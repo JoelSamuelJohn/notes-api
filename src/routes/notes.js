@@ -7,7 +7,7 @@ const authenticateToken = require('../middleware/auth');
 // GET all notes
 router.get('/', authenticateToken, async (req, res) => {
   try {
-    const notes = await getAllNotes()
+    const notes = await getAllNotes(req.user.id)
     res.json(notes)
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -31,7 +31,7 @@ router.post('/', authenticateToken, async (req, res) => {
     return res.status(400).json({ error: "title is required" })
   }
   try {
-    const note = await createNote(req.body.title, req.body.content)
+    const note = await createNote(req.body.title, req.body.content, req.user.id)
     res.json(note)
 
   }
